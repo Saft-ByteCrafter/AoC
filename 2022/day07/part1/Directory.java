@@ -11,11 +11,11 @@ public class Directory {
     private int totalFileSizes;
 
 
-    public Directory(String name) {
+    protected Directory(String name) {
         this(name, null);
     }
 
-    public Directory(String name, Directory outerDir) {
+    protected Directory(String name, Directory outerDir) {
 
         this.name = name;
         this.outerDir = outerDir;
@@ -24,11 +24,11 @@ public class Directory {
 
     }
 
-    public void addSubDir(Directory subDir) {
+    protected void addSubDir(Directory subDir) {
         subDirs.add(subDir);
     }
 
-    public Directory getSubDir(String name) {
+    protected Directory getSubDir(String name) {
 
         if(name.equals("/")) return this;
 
@@ -40,7 +40,7 @@ public class Directory {
 
     }
 
-    public Directory getOuterDir() {
+    protected Directory getOuterDir() {
         if(outerDir == null) {
             System.out.println("Ayo there ain't no outerDir dud" + this.name);
             throw new RuntimeException();
@@ -48,18 +48,18 @@ public class Directory {
         return outerDir;
     }
 
-    public void addFile(int fileSize) {
+    protected void addFile(int fileSize) {
         totalFileSizes += fileSize;
     }
 
-    public int getTotalSize(List<Integer> sizes) {
+    protected int getTotalSize(List<Integer> sizes) {
         int subSizes = 0;
         for (Directory dir : subDirs) subSizes += dir.getTotalSize(sizes);
         if(this.totalFileSizes + subSizes <= 100000) sizes.add(this.totalFileSizes + subSizes);
         return this.totalFileSizes + subSizes;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 

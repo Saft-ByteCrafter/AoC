@@ -12,11 +12,11 @@ public class Directory {
     private int totalSize;
 
 
-    public Directory(String name) {
+    protected Directory(String name) {
         this(name, null);
     }
 
-    public Directory(String name, Directory outerDir) {
+    protected Directory(String name, Directory outerDir) {
 
         this.name = name;
         this.outerDir = outerDir;
@@ -26,11 +26,11 @@ public class Directory {
 
     }
 
-    public void addSubDir(Directory subDir) {
+    protected void addSubDir(Directory subDir) {
         subDirs.add(subDir);
     }
 
-    public Directory getSubDir(String name) {
+    protected Directory getSubDir(String name) {
 
         if (name.equals("/")) return this;
 
@@ -42,7 +42,7 @@ public class Directory {
 
     }
 
-    public Directory getOuterDir() {
+    protected Directory getOuterDir() {
         if (outerDir == null) {
             System.out.println("Ayo there ain't no outerDir dud" + this.name);
             throw new RuntimeException();
@@ -50,11 +50,11 @@ public class Directory {
         return outerDir;
     }
 
-    public void addFile(int fileSize) {
+    protected void addFile(int fileSize) {
         totalFileSizes += fileSize;
     }
 
-    public int getSize() {
+    protected int getSize() {
         if (this.totalSize == 0) {
             int subSizes = 0;
             for (Directory dir : subDirs) subSizes += dir.getSize();
@@ -63,7 +63,7 @@ public class Directory {
         return totalSize;
     }
 
-    public int getBestSize(int needed, int best) {
+    protected int getBestSize(int needed, int best) {
         for(Directory dir : subDirs) {
             int size = dir.getBestSize(needed, best);
             if(size >= needed && (size < best || best == -1)) best = size;
@@ -72,7 +72,7 @@ public class Directory {
         return best;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 

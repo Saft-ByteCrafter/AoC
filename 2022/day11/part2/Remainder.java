@@ -7,7 +7,7 @@ public class Remainder {
 
     private final Map<Integer, Integer> remainders;
 
-    public Remainder(int number) {
+    protected Remainder(int number) {
         remainders = new HashMap<>();
         // haha hardcoding go brrrrrr...
         /*remainders.put(13, number % 13);
@@ -25,25 +25,25 @@ public class Remainder {
         remainders.put(19, number % 19);
     }
 
-    public void add(int addend) {
+    protected void add(int addend) {
         for (Integer key : remainders.keySet()) {
             remainders.compute(key, (k, v) -> (v + addend) % k);
         }
     }
 
-    public void multiply(int factor) {
+    protected void multiply(int factor) {
         for (Integer key : remainders.keySet()) {
             remainders.compute(key, (k, v) -> (v * factor) % k);
         }
     }
 
-    public void square() {
+    protected void square() {
         for (Integer key : remainders.keySet()) {
             remainders.compute(key, (k, v) -> (v * v) % k);
         }
     }
 
-    public int getRemainder(int dividend) {
+    protected int getRemainder(int dividend) {
         return remainders.get(dividend);
     }
 

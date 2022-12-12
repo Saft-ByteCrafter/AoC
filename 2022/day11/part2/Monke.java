@@ -30,11 +30,11 @@ public abstract class Monke {
         Main.monkes.get(nextMonke(newItem)).addItem(newItem);
     }
 
-    public void yeetAll() {
+    protected void yeetAll() {
         while(!items.isEmpty()) throwItem();
     }
 
-    public long getInspections() {
+    protected long getInspections() {
         return inspections;
     }
 
