@@ -14,10 +14,9 @@ public class Main {
 
             int maxCoords = 4000000;
 
-
-            List<Set<Integer>> xWhereNotBeacon = new ArrayList<>();
+            List<List<Integer[]>> xWhereNotBeacon = new ArrayList<>();
             for (int i = 0; i <= maxCoords; i++) {
-                xWhereNotBeacon.add(new HashSet<>(IntStream.range(0, maxCoords).boxed().collect(Collectors.toList())));
+                xWhereNotBeacon.add(new ArrayList<>());
             }
 
             while (scan.hasNext()) {
@@ -32,26 +31,43 @@ public class Main {
 
                 for (int y = 0; y <= maxCoords; y++) {
 
-                    if ((sy < y && sy + manhattanDistance < y) || (sy > y && sy - manhattanDistance > y))
-                        continue;
+                    if ((sy < y && sy + manhattanDistance < y) || (sy > y && sy - manhattanDistance > y)) continue;
 
                     int distanceToLine = sy > y ? sy - y : y - sy;
                     int lineDistanceFromCenter = manhattanDistance - distanceToLine;
 
-                    for (int x = -lineDistanceFromCenter; x <= lineDistanceFromCenter; x++) {
-                        if (sx + x < 0 || sx + x > maxCoords) continue;
-                        xWhereNotBeacon.get(y).remove(sx + x);
-                    }
+                    int lBound = -lineDistanceFromCenter + sx;
+                    int uBound = lineDistanceFromCenter + sx;
+
+                    xWhereNotBeacon.get(y).add(new Integer[]{lBound, uBound});
 
                 }
             }
             for (int y = 0; y <= maxCoords; y++) {
-                if (xWhereNotBeacon.get(y).isEmpty()) continue;
-                int x = 0;
-                for (int defX : xWhereNotBeacon.get(y)) x = defX;
-                System.out.printf("The coords are %d|%d, which makes for a score of %d%n", x, y, x * 4000000 + y);
+                List<Range> ranges = new ArrayList<>();
+                for (Integer[] bounds : xWhereNotBeacon.get(y)) {
+                    int lbound = bounds[0] >= 0 ? bounds[0] : 0;
+                    int ubound = bounds[1] <= maxCoords ? bounds[1] : maxCoords;
+                    if (lbound > maxCoords || ubound < 0) continue;
+                    Range newRange = new Range(lbound, ubound);
+
+                    if (ranges.isEmpty()) {
+                        ranges.add(newRange);
+                        continue;
+                    }
+
+                    mergeRanges(ranges, newRange);
+
+                }
+                if (ranges.size() == 2) {
+                    int x;
+                    Range range = ranges.get(0);
+                    if (range.getLbound() == 0) x = range.getUbound() + 1;
+                    else x = range.getLbound() - 1;
+                    System.out.printf("The coords are %d|%d, which makes for a score of %d%n", x, y, x * 4000000L + y);
+                }
+
             }
-            System.out.println(xWhereNotBeacon);
 
 
         } catch (FileNotFoundException e) {
@@ -63,6 +79,21 @@ public class Main {
     public static String[] cleanseInput(String input) {
         input = input.replace("Sensor at x=", "").replace(" y=", "").replace(": closest beacon is at x=", ",");
         return input.split(",");
+    }
+
+    public static void mergeRanges(List<Range> ranges, Range newRange) {
+
+        for (Range range : ranges) {
+            if (range.intersects(newRange)) {
+                ranges.remove(range);
+                range.merge(newRange);
+                newRange = range;
+                mergeRanges(ranges, newRange);
+                return;
+            }
+        }
+        ranges.add(newRange);
+
     }
 
 }
